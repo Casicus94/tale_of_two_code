@@ -1,0 +1,13 @@
+{
+  "title": "A tale of two pollutants: code",
+  "upload_type": "software",
+  "license": "MIT",
+  "creators": [
+    {"name": "Casallas, Alejandro", "affiliation": "Institute of Science and Technology Austria", "orcid": "0000-0002-1988-5035"},
+    {"name": "González, Yuri", "affiliation": "Fundación Universitaria Los Libertadores"},
+    {"name": "Mogollón-Sotelo, Caroline", "affiliation": "University of Manchester"},
+    {"name": "López-Barrera, Ellie Anne", "affiliation": "Universidad Sergio Arboleda", "orcid": "0000-0002-4195-6354"},
+    {"name": "Rojas, Néstor", "affiliation": "Universidad Nacional de Colombia", "orcid": "0000-0001-7804-0449"},
+    {"name": "Pozzer, Andrea", "affiliation": "Max Planck Institute for Chemistry (Mainz)", "orcid": "0000-0003-2440-6104"}
+  ]
+}
