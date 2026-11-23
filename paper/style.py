@@ -41,8 +41,49 @@ plt.rcParams.update({
 })
 
 
+import re as _re
+from matplotlib.text import Text as _Text
+
+# Single letters that are symbols on our figures (n days, r correlation, t time, w vertical velocity, u wind ...):
+# a text starting with one of them followed by a non-letter keeps its lower case.
+_SYMBOL_START = _re.compile(r"^[nrtwuxykp](?![A-Za-z])")
+
+
+def _elementa_fix(s):
+    if not isinstance(s, str) or not s:
+        return s
+    m = _re.fullmatch(r"\(([a-h])\)", s.strip())
+    if m:
+        return m.group(1)
+    s = s.replace("Lead eq.", "lead equation").replace("Eq. ", "Equation ")
+    if s[0].islower() and not _SYMBOL_START.match(s):
+        s = s[0].upper() + s[1:]
+    return s
+
+
+def _elementa_text(fig):
+    """Apply the Elementa style sheet to every text on the figure (2026-11-23):
+    panel letters without parentheses, sentence case for labels and phrases, and
+    'Equation' spelled out instead of 'Eq.'."""
+    from matplotlib.ticker import FixedFormatter, FuncFormatter
+    from matplotlib.category import StrCategoryFormatter
+    for ax in fig.axes:                      # text tick labels are regenerated at draw time from the formatter
+        for axis in (ax.xaxis, ax.yaxis):
+            fmt = axis.get_major_formatter()
+            if isinstance(fmt, (FixedFormatter, FuncFormatter, StrCategoryFormatter)) and not getattr(fmt, "_elementa", False):
+                new = FuncFormatter(lambda x, pos=None, _f=fmt: _elementa_fix(_f(x, pos)))
+                new._elementa = True
+                axis.set_major_formatter(new)
+    for t in fig.findobj(_Text):
+        s = t.get_text()
+        new = _elementa_fix(s)
+        if new != s:
+            t.set_text(new)
+
+
 def save_fig(fig, name, line_art=False):
     """Write png (300 dpi; 600 for pure line art) and pdf into Paper/figures/."""
+    _elementa_text(fig)
     fig.savefig(FIG / f"{name}.png", dpi=600 if line_art else 300)
     fig.savefig(FIG / f"{name}.pdf")
     if not NOTEBOOK:
